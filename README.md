@@ -28,6 +28,6 @@ Environment:
 - create a table in DynamoDb, populate it with something
 - take note of the table's ARN
 - go to IAM, find the role created for Lambda, add inline policy with that ARN
-
+- to test it as public API, enable API Gateway
 
 

@@ -12,12 +12,16 @@ object Handler {
 
   def main(event: APIGatewayProxyEvent)(implicit ec: ExecutionContext): Future[APIGatewayProxyResult] =
     for {
+      myId <- Future{
+        event.queryStringParameters.asInstanceOf[js.Dictionary[String]]("myid") // can be null if query param doesn't exist
+      }
       item <- fetchDynamo()
       response <- Future {APIGatewayProxyResult(
         statusCode = 200,
         body =
           s"""
              |{
+             |"q" : "${myId}",
              |"name" : "${item.get("name").S.toString}",
              |"city" : "${item.get("city").S.toString}"
              |}
