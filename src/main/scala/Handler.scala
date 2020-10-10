@@ -16,10 +16,10 @@ object Handler {
             s"""
                |{
                |"code" : ${e.code},
-               |"msg" : ${e.msg}
+               |"msg" : "${e.msg}"
                |}
                |""".stripMargin,
-          headers = js.defined(js.Dictionary("Content-Type" -> "text/json"))
+          headers = js.defined(js.Dictionary("Content-Type" -> "application/json"))
       )
 
       case Right(user) =>
@@ -28,11 +28,11 @@ object Handler {
           body =
             s"""
                |{
-               |"name" : ${user.name.toString},
-               |"city" : ${user.city.toString}
+               |"name" : "${user.name.toString}",
+               |"city" : "${user.city.toString}"
                |}
                |""".stripMargin,
-          headers = js.defined(js.Dictionary("Content-Type" -> "text/json"))
+          headers = js.defined(js.Dictionary("Content-Type" -> "application/json"))
         )
     }
   }
