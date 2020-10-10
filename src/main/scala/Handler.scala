@@ -1,45 +1,41 @@
-import facade.amazonaws.services.dynamodb.{AttributeValue, DynamoDB, GetItemInput}
-
 import scalajs.js
 import js.annotation.JSExportTopLevel
 import net.exoego.facade.aws_lambda._
 
 import scala.concurrent.{ExecutionContext, Future}
-import scala.scalajs.js.Dictionary
 
 object Handler {
   val tableName = "proto-lambda-scalajs"
 
-  def main(event: APIGatewayProxyEvent)(implicit ec: ExecutionContext): Future[APIGatewayProxyResult] =
-    for {
-      myId <- Future{
-        event.queryStringParameters.asInstanceOf[js.Dictionary[String]]("myid") // can be null if query param doesn't exist
-      }
-      item <- fetchDynamo()
-      response <- Future {APIGatewayProxyResult(
-        statusCode = 200,
-        body =
-          s"""
-             |{
-             |"q" : "${myId}",
-             |"name" : "${item.get("name").S.toString}",
-             |"city" : "${item.get("city").S.toString}"
-             |}
-             |""".stripMargin,
-        headers = js.defined(js.Dictionary("Content-Type" -> "text/json"))
-      )}
-    } yield response
+  def main(event: APIGatewayProxyEvent)(implicit ec: ExecutionContext): Future[APIGatewayProxyResult] = {
+    Logic.comp(event).value.map {
+      case Left(e) =>
+        APIGatewayProxyResult(
+          statusCode = e.code,
+          body =
+            s"""
+               |{
+               |"code" : ${e.code},
+               |"msg" : ${e.msg}
+               |}
+               |""".stripMargin,
+          headers = js.defined(js.Dictionary("Content-Type" -> "text/json"))
+      )
 
-  def fetchDynamo()(implicit ec: ExecutionContext) =
-    for {
-      record <- new DynamoDB().getItemFuture(
-        GetItemInput(
-          Key = Dictionary("myId" -> AttributeValue.S("abc")),
-          TableName = tableName
-        ))
-      item <- Future(record.Item)
-    } yield item
-
+      case Right(user) =>
+        APIGatewayProxyResult(
+          statusCode = 200,
+          body =
+            s"""
+               |{
+               |"name" : ${user.name.toString},
+               |"city" : ${user.city.toString}
+               |}
+               |""".stripMargin,
+          headers = js.defined(js.Dictionary("Content-Type" -> "text/json"))
+        )
+    }
+  }
 
   @JSExportTopLevel(name="handler")
   val handler: js.Function2[APIGatewayProxyEvent, Context, js.Promise[APIGatewayProxyResult]] = {

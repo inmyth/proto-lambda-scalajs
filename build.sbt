@@ -41,6 +41,8 @@ npmDependencies in Compile += "aws-sdk" -> awsSdkVersion
 
 // Include scalatest
 libraryDependencies += "org.scalatest" %%% "scalatest" % "3.1.1" % "test"
+// Other dependencies
+libraryDependencies += "io.monix" %%% "monix" % "3.2.2"
 
 // Package lambda as a zip. Use `universal:packageBin` to create the zip
 topLevelDirectory := None
