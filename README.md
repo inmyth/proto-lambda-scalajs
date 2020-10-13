@@ -10,7 +10,7 @@ https://github.com/exoego/aws-sdk-scalajs-facade
 https://github.com/exoego/aws-lambda-scalajs-facade
 
 First commit contains updated template that works by 2020 Oct.
-bgahagan's template works. Updating dependencies may cause it to stop working (no resulting js, if it works shell should show "Fast optimizing target\scala-2.13\scalajs-bundler\main\project-name.js").
+So bgahagan's template works but updating dependencies may cause it to stop working (no resulting js, if it works shell should show "Fast optimizing target\scala-2.13\scalajs-bundler\main\project-name.js").
 
 Steps:
 - clone the gitter template or revert to first commit.
