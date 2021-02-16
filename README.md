@@ -19,7 +19,7 @@ Steps:
 This project uses DynamoDB so just do `libraryDependencies += "net.exoego" %%% "aws-sdk-scalajs-facade-dynamodb" % awsSdkScalajsFacadeVersion`.
 The other alternative is to use the entire bundled facades (artifact `aws-sdk-scalajs-facade`) which is huge. 
 - run `sbt`
-- enter `~fastOptJS::webpack` which hotloads packaging into js
+- enter `~fastLinkJS` old: `~fastOptJS::webpack` which hotloads packaging into js
 - to test if it really works, delete `scalajs-bundler` and repeat the command
 - paste the content of the js file on AWS Lambda editor
 
