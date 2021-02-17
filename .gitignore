@@ -6,6 +6,9 @@ target/
 /linker-interface/**/scalajs-logging-src-jars/
 /node_modules/
 
+# sbt
+.bsp/sbt.json
+
 # IDE specific
 .cache
 .classpath
