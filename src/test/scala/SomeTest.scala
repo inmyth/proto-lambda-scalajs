@@ -6,7 +6,7 @@ class SomeTest extends AnyFlatSpec {
 
   it should "assert True" in {
     val x = 2 + 3
-    assert(6 == x)
+    assert(5 == x)
   }
 
 }
