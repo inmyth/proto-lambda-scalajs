@@ -1,4 +1,4 @@
-# Prototype AWS Lambda in Scala.js
+# AWS Lambda Prototype in Scala.js
 
 A prototype of AWS Lambda function written in scala.js. 
 Connects to DynamoDb and returns the result as http response. 
