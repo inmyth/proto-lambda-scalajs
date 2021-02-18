@@ -3,6 +3,10 @@
 A prototype of AWS Lambda function written in scala.js. 
 Connects to DynamoDb and returns the result as http response. 
 
+Important:
+- sbt run and test will run on node environment
+- `%%%` is for scala.js lib. `%%` is for normal scala lib. Make sure dependencies in build.sbt are reflected appropriately. 
+
 - Gitter Template
 https://github.com/bgahagan/scalajs-lambda.g8
 - AWS Facades

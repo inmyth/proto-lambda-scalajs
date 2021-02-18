@@ -16,8 +16,9 @@ scalacOptions ++= Seq(
   "-Ywarn-unused",
   "-Xlint"
 )
+
 version in webpack := "4.16.1"
-useYarn := true
+//useYarn := true // this requires yarn installed
 webpackConfigFile := Some(baseDirectory.value / "webpack.config.js")
 version in startWebpackDevServer := "3.1.4"
 
@@ -26,19 +27,20 @@ version in startWebpackDevServer := "3.1.4"
 
 // Incluce type defintion for aws lambda handlers
 libraryDependencies += "net.exoego" %%% "aws-lambda-scalajs-facade" % "0.11.0"
-// Optional: Include the AWS SDK as a dep
 
-//val awsSdkVersion              = "v2.798.0"
-//val awsSdkScalajsFacadeVersion = s"0.32.0-${awsSdkVersion}"
+// Optional: Include the AWS SDK as a dep
+val awsSdkVersion = "2.798.0"
+//val awsSdkScalajsFacadeVersion = s"0.32.0-v${awsSdkVersion}"
 //libraryDependencies += "net.exoego" %%% "aws-sdk-scalajs-facade-dynamodb" % "0.32.0-v2.798.0"
 //enablePlugins(ScalaJSBundlerPlugin)
-//npmDependencies += "aws-sdk" -> "2.731.0"
+npmDependencies in Compile += "aws-sdk" -> awsSdkVersion // this works for test
 
 // Optional: Include some nodejs types (useful for, say, accessing the env)
 //libraryDependencies += "net.exoego" %%% "scala-js-nodejs-v12" % "0.9.1"
 
 // Include scalatest
-libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.2" % "test"
+libraryDependencies += "org.scalatest" %%% "scalatest" % "3.2.2" % "test" // %%% (for scala.js lib) not %% (normal scala lib)
+
 // Other dependencies
 libraryDependencies += "io.monix" %%% "monix" % "3.2.2"
 
@@ -48,4 +50,3 @@ mappings in Universal ++= (webpack in (Compile, fullOptJS)).value.map { f =>
   // remove the bundler suffix from the file names
   f.data -> f.data.getName().replace("-opt-bundle", "")
 }
-//scalaJSUseMainModuleInitializer := true
