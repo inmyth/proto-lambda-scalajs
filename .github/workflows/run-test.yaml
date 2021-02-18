@@ -15,10 +15,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Setup Node
-        uses: actions/setup-node@v2
+        uses: bahmutov/npm-install@v1
         with:
-          node-version: '12'
-      - run: npm install
+          working-directory: $(pwd)/target/scala-2.13/scalajs-bundler/test
       - name: SBT action test
         id: sbt
         uses: lokkju/github-action-sbt@master
