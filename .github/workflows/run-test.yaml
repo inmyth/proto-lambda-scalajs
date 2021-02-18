@@ -14,11 +14,12 @@ jobs:
 
       - name: Checkout
         uses: actions/checkout@v2
+      - name SBT
+        uses: olafurpg/setup-scala@v10
       - name: Setup Node
-        uses: bahmutov/npm-install@v1
-
-      - name: SBT action test
-        id: sbt
-        uses: lokkju/github-action-sbt@master
+        uses: actions/setup-node@v2
         with:
-          commands: test
+          node-version: '12'
+      - run: npm install
+      - name: Build and Test
+          run: sbt test
