@@ -33,3 +33,4 @@ jobs:
           uses: peter-evans/repository-dispatch@v1
           with:
             event-type: test-completed
+            token: ${{ secrets.REPO_ACCESS_TOKEN }}
