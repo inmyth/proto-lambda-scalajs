@@ -13,7 +13,7 @@ https://github.com/bgahagan/scalajs-lambda.g8
 https://github.com/exoego/aws-sdk-scalajs-facade
 https://github.com/exoego/aws-lambda-scalajs-facade
   
-Steps:
+Build:
 - clone the gitter template
 - update dependencies on `plugins.sbt`
 - add necessary facades
@@ -24,6 +24,9 @@ The other alternative is to use the entire bundled facades (artifact `aws-sdk-sc
 - for production run `sbt fullLinkJS`, result is single file `main.js` in scala.2.13/<projectname>-opt
 - to test if it really works, delete `scalajs-bundler` and repeat the command
 - paste the content of the js file on AWS Lambda editor
+
+Github Actions:
+- add necessary secrets
 
 AWS Environment:
 - create a function in AWS Lambda with basic role
