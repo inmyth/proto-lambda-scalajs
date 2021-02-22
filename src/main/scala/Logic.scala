@@ -7,13 +7,16 @@ import cats.instances.future.catsStdInstancesForFuture
 import facade.amazonaws.AWS
 import monix.reactive.Observable
 
+import scala.language.postfixOps
 import scala.concurrent.{ExecutionContext, Future}
 import scala.scalajs.js
 import scala.scalajs.js.Dictionary
-import scala.util.Try
+import scala.util.{Random, Try}
 import facade.amazonaws.AWS
 import facade.amazonaws.services.sns
 import facade.amazonaws.services.sns._
+
+import scala.concurrent.duration.DurationInt
 
 object Logic extends App {
   import monix.execution.Scheduler.Implicits.global
@@ -50,17 +53,17 @@ object Logic extends App {
           .getItemFuture(GetItemInput(Key = Dictionary("myId" -> AttributeValue.S(myId)), TableName = tableName))
         item <- Future(record.Item)
       } yield item)
-        .map(p => Right(new User(p.get("name").S, p.get("city").S)))
+        .map(p => Right(User(p.get("name").S, p.get("city").S)))
         .recoverWith(e => Future.successful(Left(Error.UserNotFound(myId): Error)))
     }
 
-//  def comp(event: APIGatewayProxyEvent)(implicit ec: ExecutionContext) =
-//    for{
-//      a <- parseMyId(event)
-//      b <- fetchUser(a)
-//    } yield b
+  def compa(event: APIGatewayProxyEvent)(implicit ec: ExecutionContext) =
+    for {
+      a <- parseMyId(event)
+      b <- fetchUser(a)
+    } yield b
 
-  def comp(msg: String): Task[Either[Throwable, PublishResponse]] = {
+  def comp(msg: String): EitherT[Task, Throwable, PublishResponse] = {
     /*
     var msg = {
         "default": "A message.",
@@ -81,17 +84,17 @@ object Logic extends App {
                     TopicArn: "arn:aws:sns:ap-northeast-2:197367645398:testn.fifo"
                     };
      */
-    for {
+    val x = for {
       a <- Task.now {
         PublishInput(
           s"""
              |{
-             |        "default": "A message.",
-             |        "email": "A message for email.",
-             |        "email-json": "A message for email (JSON).",
-             |        "http": "A message for HTTP.",
-             |        "https": "A message for HTTPS.",
-             |        "sqs": "A message for Amazon SQS."
+             | "default": "A message.",
+             | "email": "A message for email.",
+             | "email-json": "A message for email (JSON).",
+             | "http": "A message for HTTP.",
+             | "https": "A message for HTTPS.",
+             | "sqs": "A message for Amazon SQS."
              |}          
              |""".stripMargin,
           js.undefined,
@@ -104,8 +107,22 @@ object Logic extends App {
           "arn:aws:sns:ap-northeast-2:197367645398:testn.fifo"
         )
       }
-      b <- Task.fromFuture(new SNS().publish(a).promise().toFuture).attempt
+      b <- retryOnFailure(3, Task.fromFuture[PublishResponse](new SNS().publish(a).promise().toFuture))
     } yield b
-
+    val y = x
+      .map(p => Right(p))
+      .onErrorHandle { p => Left(p) }
+    EitherT(y)
   }
+
+  def retryOnFailure[A](times: Int, source: Task[A]): Task[A] =
+    source
+    //      .flatMap(p => if (Random.nextInt(10) < 8) Task.raiseError(new Exception) else Task(p))
+      .onErrorHandleWith { err =>
+        if (times <= 0) Task.raiseError(err)
+        else {
+          println("retrying")
+          retryOnFailure(times - 1, source).delayExecution(1 second)
+        }
+      }
 }
