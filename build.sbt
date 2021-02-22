@@ -29,10 +29,9 @@ version in startWebpackDevServer := "3.1.4"
 libraryDependencies += "net.exoego" %%% "aws-lambda-scalajs-facade" % "0.11.0"
 
 // Optional: Include the AWS SDK as a dep
-val awsSdkVersion = "2.798.0"
-//val awsSdkScalajsFacadeVersion = s"0.32.0-v${awsSdkVersion}"
-//libraryDependencies += "net.exoego" %%% "aws-sdk-scalajs-facade-dynamodb" % "0.32.0-v2.798.0"
-//enablePlugins(ScalaJSBundlerPlugin)
+val awsSdkVersion              = "2.798.0"
+val awsSdkScalajsFacadeVersion = s"0.32.0-v${awsSdkVersion}"
+libraryDependencies += "net.exoego"    %%% "aws-sdk-scalajs-facade-sns" % awsSdkScalajsFacadeVersion
 npmDependencies in Compile += "aws-sdk" -> awsSdkVersion // this works for test
 
 // Optional: Include some nodejs types (useful for, say, accessing the env)
